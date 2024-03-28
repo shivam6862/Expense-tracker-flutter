@@ -10,3 +10,8 @@ windows
 pubspec.lock
 .metadata
 build
+.flutter-plugins-dependencies
+.flutter-plugins
+.env
+assets
+google-services.json
