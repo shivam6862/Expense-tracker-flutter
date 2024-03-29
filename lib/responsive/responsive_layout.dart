@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:expense_tracker_flutter/providers/user_provider.dart';
 import 'package:expense_tracker_flutter/utils/global_variable.dart';
+import 'package:provider/provider.dart';
 
-class ResponsiveLayout extends StatelessWidget {
+class ResponsiveLayout extends StatefulWidget {
   final Widget mobile;
   final Widget tablet;
   final Widget desktop;
@@ -13,26 +15,33 @@ class ResponsiveLayout extends StatelessWidget {
     required this.desktop,
   }) : super(key: key);
 
-  static bool isMobile(BuildContext context) =>
-      MediaQuery.of(context).size.width < sizeOfMobile;
+  @override
+  State<ResponsiveLayout> createState() => _ResponsiveLayoutState();
+}
 
-  static bool isTablet(BuildContext context) =>
-      MediaQuery.of(context).size.width >= sizeOfMobile &&
-      MediaQuery.of(context).size.width < sizeOfTablet;
+class _ResponsiveLayoutState extends State<ResponsiveLayout> {
+  @override
+  void initState() {
+    super.initState();
+    addData();
+  }
 
-  static bool isDesktop(BuildContext context) =>
-      MediaQuery.of(context).size.width >= sizeOfTablet;
+  addData() async {
+    UserProvider userProvider =
+        Provider.of<UserProvider>(context, listen: false);
+    await userProvider.refreshUser();
+  }
 
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
         if (constraints.maxWidth >= sizeOfTablet) {
-          return desktop;
+          return widget.desktop;
         } else if (constraints.maxWidth >= sizeOfMobile) {
-          return tablet;
+          return widget.tablet;
         } else {
-          return mobile;
+          return widget.mobile;
         }
       },
     );
