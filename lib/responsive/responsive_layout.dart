@@ -9,11 +9,11 @@ class ResponsiveLayout extends StatefulWidget {
   final Widget desktop;
 
   const ResponsiveLayout({
-    Key? key,
+    super.key,
     required this.mobile,
     required this.tablet,
     required this.desktop,
-  }) : super(key: key);
+  });
 
   @override
   State<ResponsiveLayout> createState() => _ResponsiveLayoutState();

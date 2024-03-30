@@ -4,7 +4,7 @@ import 'package:expense_tracker_flutter/utils/colors.dart';
 import 'package:expense_tracker_flutter/utils/global_variable.dart';
 
 class TabletScreenLayout extends StatefulWidget {
-  const TabletScreenLayout({Key? key}) : super(key: key);
+  const TabletScreenLayout({super.key});
 
   @override
   State<TabletScreenLayout> createState() => _TabletScreenLayoutState();

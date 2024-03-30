@@ -4,7 +4,7 @@ import 'package:expense_tracker_flutter/utils/colors.dart';
 import 'package:expense_tracker_flutter/utils/global_variable.dart';
 
 class MobileScreenLayout extends StatefulWidget {
-  const MobileScreenLayout({Key? key}) : super(key: key);
+  const MobileScreenLayout({super.key});
 
   @override
   State<MobileScreenLayout> createState() => _MobileScreenLayoutState();

@@ -6,7 +6,7 @@ import 'package:expense_tracker_flutter/utils/colors.dart';
 
 class ProfileScreen extends StatefulWidget {
   final String uid;
-  const ProfileScreen({Key? key, required this.uid}) : super(key: key);
+  const ProfileScreen({super.key, required this.uid});
 
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
@@ -34,10 +34,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
       userData = userSnap.data()!;
       setState(() {});
     } catch (e) {
-      showSnackBar(
-        context,
-        e.toString(),
-      );
+      if (mounted) {
+        showSnackBar(
+          context,
+          e.toString(),
+        );
+      }
     }
     setState(() {
       isLoading = false;

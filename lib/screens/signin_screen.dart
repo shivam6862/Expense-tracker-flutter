@@ -12,7 +12,7 @@ import 'package:expense_tracker_flutter/utils/global_variable.dart';
 import 'package:expense_tracker_flutter/widgets/text_field_input.dart';
 
 class SignInScreen extends StatefulWidget {
-  const SignInScreen({Key? key}) : super(key: key);
+  const SignInScreen({super.key});
 
   @override
   State<SignInScreen> createState() => _SignInScreenState();
@@ -52,7 +52,7 @@ class _SignInScreenState extends State<SignInScreen> {
     });
 
     if (response == 'success') {
-      if (context.mounted) {
+      if (mounted) {
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(
             builder: (context) => const ResponsiveLayout(
@@ -64,7 +64,7 @@ class _SignInScreenState extends State<SignInScreen> {
         );
       }
     } else {
-      if (context.mounted) {
+      if (mounted) {
         showSnackBar(context, response);
       }
     }
@@ -108,7 +108,6 @@ class _SignInScreenState extends State<SignInScreen> {
               ),
               SvgPicture.asset(
                 'assets/logo.svg',
-                color: primaryColor,
                 height: 64,
               ),
               const SizedBox(

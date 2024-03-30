@@ -11,7 +11,7 @@ class TextFieldInput extends StatelessWidget {
   final String name;
 
   const TextFieldInput({
-    Key? key,
+    super.key,
     required this.textEditingController,
     this.isPass = false,
     required this.hintText,
@@ -19,7 +19,7 @@ class TextFieldInput extends StatelessWidget {
     required this.error,
     required this.onBlur,
     required this.name,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +32,7 @@ class TextFieldInput extends StatelessWidget {
 
     return Container(
       alignment: Alignment.center,
-      child: Container(
+      child: SizedBox(
         width: double.infinity,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -44,19 +44,19 @@ class TextFieldInput extends StatelessWidget {
                   color: error.isNotEmpty ? lightWarnColor : primaryColor,
                 ),
                 enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.black),
+                  borderSide: const BorderSide(color: Colors.black),
                   borderRadius: BorderRadius.circular(8.0),
                 ),
                 focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: inputBorderColor),
+                  borderSide: const BorderSide(color: inputBorderColor),
                   borderRadius: BorderRadius.circular(8.0),
                 ),
                 errorBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: lightWarnColor),
+                  borderSide: const BorderSide(color: lightWarnColor),
                   borderRadius: BorderRadius.circular(8.0),
                 ),
                 focusedErrorBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: lightWarnColor),
+                  borderSide: const BorderSide(color: lightWarnColor),
                   borderRadius: BorderRadius.circular(8.0),
                 ),
               ),

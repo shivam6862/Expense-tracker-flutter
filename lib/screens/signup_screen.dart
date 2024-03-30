@@ -13,7 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 class SignupScreen extends StatefulWidget {
-  const SignupScreen({Key? key}) : super(key: key);
+  const SignupScreen({super.key});
 
   @override
   State<SignupScreen> createState() => _SignupScreenState();
@@ -44,7 +44,19 @@ class _SignupScreenState extends State<SignupScreen> {
     _errors.clear();
   }
 
+  bool get isFormValid {
+    return _controllers.values
+            .every((controller) => controller.text.isNotEmpty) &&
+        _errors.values.every((error) => error.isEmpty) &&
+        _image != null;
+  }
+
   void signUpUser() async {
+    if (!isFormValid) {
+      showSnackBar(context, 'Please fill all the fields.');
+      return;
+    }
+
     setState(() {
       _isLoading = true;
     });
@@ -61,7 +73,7 @@ class _SignupScreenState extends State<SignupScreen> {
     });
 
     if (response == 'success') {
-      if (context.mounted) {
+      if (mounted) {
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(
             builder: (context) => const ResponsiveLayout(
@@ -73,7 +85,7 @@ class _SignupScreenState extends State<SignupScreen> {
         );
       }
     } else {
-      if (context.mounted) {
+      if (mounted) {
         showSnackBar(context, response);
       }
     }
@@ -96,12 +108,6 @@ class _SignupScreenState extends State<SignupScreen> {
         _errors[key] = '';
       });
     }
-  }
-
-  bool get isFormValid {
-    return _controllers.values
-            .every((controller) => controller.text.isNotEmpty) &&
-        _errors.values.every((error) => error.isEmpty);
   }
 
   @override
@@ -194,7 +200,7 @@ class _SignupScreenState extends State<SignupScreen> {
                 height: 24,
               ),
               InkWell(
-                onTap: isFormValid ? signUpUser : null,
+                onTap: signUpUser,
                 child: Container(
                   width: double.infinity,
                   alignment: Alignment.center,

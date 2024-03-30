@@ -4,7 +4,7 @@ import 'package:expense_tracker_flutter/utils/colors.dart';
 import 'package:expense_tracker_flutter/utils/global_variable.dart';
 
 class DesktopScreenLayout extends StatefulWidget {
-  const DesktopScreenLayout({Key? key}) : super(key: key);
+  const DesktopScreenLayout({super.key});
 
   @override
   State<DesktopScreenLayout> createState() => _DesktopScreenLayoutState();
@@ -47,7 +47,6 @@ class _DesktopScreenLayoutState extends State<DesktopScreenLayout> {
         centerTitle: false,
         title: SvgPicture.asset(
           'assets/logo.svg',
-          color: primaryColor,
           height: 32,
         ),
         actions: [

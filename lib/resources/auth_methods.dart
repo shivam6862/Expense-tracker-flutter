@@ -32,7 +32,7 @@ class AuthMethods {
           password.isNotEmpty ||
           username.isNotEmpty ||
           about.isNotEmpty ||
-          file != null) {
+          file.isNotEmpty) {
         UserCredential cred = await _auth.createUserWithEmailAndPassword(
           email: email,
           password: password,
