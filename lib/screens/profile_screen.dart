@@ -22,7 +22,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     getData();
   }
 
-  getData() async {
+  Future<void> getData() async {
     setState(() {
       isLoading = true;
     });
@@ -46,6 +46,147 @@ class _ProfileScreenState extends State<ProfileScreen> {
     });
   }
 
+  String capitalize(String text) {
+    if (text.isEmpty) {
+      return text;
+    }
+    return text[0].toUpperCase() + text.substring(1);
+  }
+
+  void openEditProfileDialog() {
+    final Map<String, TextEditingController> controllers = {
+      'username': TextEditingController(),
+      'about': TextEditingController(),
+    };
+
+    controllers['username']!.text = userData['username'];
+    controllers['about']!.text = userData['about'];
+
+    void updateProfile() async {
+      final String username = controllers['username']!.text;
+      final String about = controllers['about']!.text;
+      final String email = userData['email'];
+      final String photoUrl = userData['photoUrl'];
+
+      if (username.isNotEmpty && about.isNotEmpty) {
+        String res = await AuthMethods().updateProfile(
+          username: username,
+          about: about,
+          email: email,
+          photoUrl: photoUrl,
+        );
+
+        if (res == 'success') {
+          setState(() {
+            userData['username'] = username;
+            userData['about'] = about;
+          });
+          if (mounted) {
+            showSnackBar(
+              context,
+              'Profile Updated Successfully',
+            );
+            Navigator.of(context).pop();
+          }
+        }
+      } else {
+        showSnackBar(
+          context,
+          'Please fill all the fields',
+        );
+      }
+    }
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return SimpleDialog(
+          title: const Text('Edit Profile'),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          backgroundColor: whiteColor,
+          shadowColor: whiteColor,
+          surfaceTintColor: whiteColor,
+          children: [
+            const Divider(),
+            Padding(
+              padding: const EdgeInsets.all(8),
+              child: TextField(
+                decoration: InputDecoration(
+                  labelText: 'Username',
+                  labelStyle: const TextStyle(
+                    color: darkColor,
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: const BorderSide(color: Colors.black),
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: const BorderSide(color: darkColor),
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                ),
+                controller: controllers['username'],
+                keyboardType: TextInputType.text,
+                cursorColor: darkColor,
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8),
+              child: TextField(
+                decoration: InputDecoration(
+                  labelText: 'About',
+                  labelStyle: const TextStyle(
+                    color: darkColor,
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: const BorderSide(color: Colors.black),
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: const BorderSide(color: darkColor),
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                ),
+                controller: controllers['about'],
+                keyboardType: TextInputType.text,
+                cursorColor: darkColor,
+                maxLines: 3,
+                minLines: 1,
+              ),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                TextButton(
+                  onPressed: updateProfile,
+                  style: TextButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child: const Text('Update'),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  style: TextButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child: const Text('Cancel'),
+                ),
+              ],
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return isLoading
@@ -57,10 +198,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
         : Scaffold(
             appBar: AppBar(
               backgroundColor: bgPrimary,
-              title: Text(
-                userData['username'],
-              ),
+              title: Text(capitalize(userData['username']),
+                  style: const TextStyle(
+                    color: Colors.black,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  )),
               centerTitle: false,
+              actions: [
+                IconButton(
+                  icon: const Icon(Icons.edit),
+                  onPressed: openEditProfileDialog,
+                ),
+              ],
             ),
             body: ListView(
               children: [
@@ -71,11 +221,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       Row(
                         children: [
                           CircleAvatar(
-                            backgroundColor: Colors.grey,
+                            backgroundColor: primaryColor,
                             backgroundImage: NetworkImage(
                               userData['photoUrl'],
                             ),
-                            radius: 40,
+                            radius: 50,
                           )
                         ],
                       ),
@@ -85,31 +235,25 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           top: 15,
                         ),
                         child: Text(
-                          userData['username'],
+                          userData['email'],
                           style: const TextStyle(
                             fontWeight: FontWeight.bold,
+                            fontSize: 15,
                           ),
                         ),
                       ),
                       Container(
                         alignment: Alignment.centerLeft,
                         padding: const EdgeInsets.only(
-                          top: 1,
+                          top: 6,
                         ),
                         child: Text(
                           userData['about'],
-                        ),
-                      ),
-                      Container(
-                        alignment: Alignment.centerLeft,
-                        padding: const EdgeInsets.only(
-                          top: 15,
-                        ),
-                        child: ElevatedButton(
-                          onPressed: () async {
-                            await AuthMethods().signOut(context);
-                          },
-                          child: const Text('Logout'),
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w400,
+                            fontSize: 14,
+                            color: Colors.grey,
+                          ),
                         ),
                       ),
                     ],
@@ -117,33 +261,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
               ],
             ),
-          );
-  }
-
-  Column buildStatColumn(int num, String label) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Text(
-          num.toString(),
-          style: const TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        Container(
-          margin: const EdgeInsets.only(top: 4),
-          child: Text(
-            label,
-            style: const TextStyle(
-              fontSize: 15,
-              fontWeight: FontWeight.w400,
-              color: Colors.grey,
+            floatingActionButton: FloatingActionButton(
+              onPressed: () async {
+                await AuthMethods().signOut(context);
+              },
+              child: const Icon(Icons.logout),
             ),
-          ),
-        ),
-      ],
-    );
+          );
   }
 }

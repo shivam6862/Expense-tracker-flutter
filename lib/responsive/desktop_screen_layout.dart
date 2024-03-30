@@ -66,7 +66,7 @@ class _DesktopScreenLayoutState extends State<DesktopScreenLayout> {
           ),
           IconButton(
             icon: Icon(
-              Icons.add_a_photo,
+              Icons.add_circle,
               color: _page == 2 ? primaryColor : secondaryColor,
             ),
             onPressed: () => navigationTapped(2),

@@ -90,4 +90,34 @@ class AuthMethods {
     Navigator.of(context)
         .push(MaterialPageRoute(builder: (context) => const SignInScreen()));
   }
+
+  Future<String> updateProfile({
+    required String username,
+    required String about,
+    required String email,
+    required String photoUrl,
+  }) async {
+    String res = "Some error Occurred";
+
+    User currentUser = _auth.currentUser!;
+
+    model.User user = model.User(
+      username: username,
+      uid: currentUser.uid,
+      photoUrl: photoUrl,
+      email: email,
+      about: about,
+    );
+
+    try {
+      await _firestore
+          .collection("users")
+          .doc(currentUser.uid)
+          .update(user.toJson());
+      res = "success";
+    } catch (e) {
+      res = e.toString();
+    }
+    return res;
+  }
 }
