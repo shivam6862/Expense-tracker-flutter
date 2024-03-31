@@ -91,6 +91,11 @@ class _SignInScreenState extends State<SignInScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('SIGN IN TO YOUR ACCOUNT'),
+        centerTitle: true,
+        backgroundColor: whiteColor,
+      ),
       resizeToAvoidBottomInset: false,
       body: SafeArea(
         child: Container(
@@ -169,7 +174,7 @@ class _SignInScreenState extends State<SignInScreen> {
                   Container(
                     padding: const EdgeInsets.symmetric(vertical: 8),
                     child: const Text(
-                      'Dont have an account?',
+                      "Don't have an account?",
                     ),
                   ),
                   GestureDetector(
@@ -178,7 +183,7 @@ class _SignInScreenState extends State<SignInScreen> {
                     child: Container(
                       padding: const EdgeInsets.symmetric(vertical: 8),
                       child: const Text(
-                        ' Signup.',
+                        ' Sign Up.',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                         ),

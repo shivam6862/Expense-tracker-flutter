@@ -113,6 +113,10 @@ class _SignupScreenState extends State<SignupScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('CREATE NEW ACCOUNT'),
+        backgroundColor: whiteColor,
+      ),
       resizeToAvoidBottomInset: false,
       body: SafeArea(
         child: Container(
@@ -245,7 +249,7 @@ class _SignupScreenState extends State<SignupScreen> {
                     child: Container(
                       padding: const EdgeInsets.symmetric(vertical: 8),
                       child: const Text(
-                        ' Sign in.',
+                        ' Sign In.',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                         ),

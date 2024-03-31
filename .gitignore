@@ -13,5 +13,5 @@ build
 .flutter-plugins-dependencies
 .flutter-plugins
 .env
-assets
+user.jpg
 google-services.json
