@@ -1,6 +1,9 @@
+import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:expense_tracker_flutter/models/expense.dart' as model;
+import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
 
 class ExpenseMethods {
@@ -188,5 +191,98 @@ class ExpenseMethods {
             DateTime.parse(e1.key).compareTo(DateTime.parse(e2.key))),
     );
     return expensesByDay;
+  }
+
+  Future<bool> isInternetconnection() async {
+    var connectivityResult = await (Connectivity().checkConnectivity());
+    return connectivityResult.isNotEmpty;
+  }
+
+  Future<String> saveExpenseToCSV(Map<String, dynamic> expense) async {
+    String res = "Some error Occurred";
+    try {
+      String csv = "Title,Description,Amount,Category,Date,id,userId\n";
+      User currentUser = _auth.currentUser!;
+      String userId = currentUser.uid;
+      String id = const Uuid().v1();
+
+      csv +=
+          "${expense['title']},${expense['description']},${expense['amount']},${expense['category']},${expense['date']},$id,$userId\n";
+
+      final directory = await getApplicationDocumentsDirectory();
+      final pathOfTheFileToWrite = "${directory.path}/expenses.csv";
+      File file = File(pathOfTheFileToWrite);
+      await file.writeAsString(csv, mode: FileMode.append);
+
+      res = "Data saved successfully";
+    } catch (e) {
+      res = e.toString();
+    }
+    return res;
+  }
+
+  Future<Map<String, dynamic>> getExpensesFromCSV() async {
+    Map<String, dynamic> res = {"message": "Some error Occurred"};
+    try {
+      final directory = await getApplicationDocumentsDirectory();
+      final pathOfTheFileToRead = "${directory.path}/expenses.csv";
+      File file = File(pathOfTheFileToRead);
+      String csv = await file.readAsString();
+      res = {"message": "success", "csv": csv};
+    } catch (e) {
+      res = {"message": e.toString()};
+    }
+    return res;
+  }
+
+  Future<String> addExpensesFromCSV() async {
+    String res = "Some error Occurred";
+    try {
+      final directory = await getApplicationDocumentsDirectory();
+      final pathOfTheFileToRead = "${directory.path}/expenses.csv";
+      File file = File(pathOfTheFileToRead);
+      String csv = await file.readAsString();
+      List<String> lines = csv.split("\n");
+      for (int i = 1; i < lines.length - 1; i++) {
+        List<String> values = lines[i].split(",");
+        model.Expense expense = model.Expense(
+          title: values[0],
+          description: values[1],
+          amount: values[2],
+          category: values[3],
+          date: values[4],
+          id: values[5],
+          userId: values[6],
+        );
+        await _firestore
+            .collection('expenses')
+            .doc(expense.id)
+            .set(expense.toJson());
+      }
+      res = "success";
+    } catch (e) {
+      res = e.toString();
+    }
+    return res;
+  }
+
+  Future<String> downloadExpensesAsCSV() async {
+    String res = "Some error Occurred";
+    try {
+      List<Map<String, dynamic>> expenses = await getExpenses();
+      String csv = "Title,Description,Amount,Category,Date\n";
+      for (var expense in expenses) {
+        csv +=
+            "${expense['title']},${expense['description']},${expense['amount']},${expense['category']},${expense['date']}\n";
+      }
+      final directory = await getApplicationDocumentsDirectory();
+      final pathOfTheFileToWrite = "${directory.path}/download.csv";
+      File file = File(pathOfTheFileToWrite);
+      await file.writeAsString(csv, mode: FileMode.write);
+      res = "Data saved successfully";
+    } catch (e) {
+      res = e.toString();
+    }
+    return res;
   }
 }
